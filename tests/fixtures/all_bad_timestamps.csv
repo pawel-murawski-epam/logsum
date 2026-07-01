@@ -1,0 +1,4 @@
+timestamp,level,service,message
+not-a-date,INFO,svc,msg1
+2024/01/01 00:00:00,WARN,svc,msg2
+yesterday,ERROR,svc,msg3

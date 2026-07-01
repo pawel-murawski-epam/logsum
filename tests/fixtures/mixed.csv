@@ -1,0 +1,6 @@
+timestamp,level,service,message
+2024-01-01T06:00:00,INFO,api,early good
+not-a-date,WARN,api,bad ts
+2024-01-01T12:00:00,INFO,api,late good
+garbage,,db,bad ts and blank level
+2024-01-01T09:00:00,,db,blank level good ts
