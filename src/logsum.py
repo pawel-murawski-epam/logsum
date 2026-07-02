@@ -10,7 +10,7 @@ def _parse_ts(value: str) -> datetime:
     return datetime.fromisoformat(value.strip())
 
 
-def summarise(input_path: str, output_path: str) -> int:
+def summarise(input_path: str, output_path: str, min_count: int = 0) -> int:
     try:
         fh = open(input_path, newline='', encoding='utf-8')
     except OSError as exc:
@@ -49,6 +49,9 @@ def summarise(input_path: str, output_path: str) -> int:
     if skipped:
         print(f'skipped {skipped} row(s) due to bad timestamps', file=sys.stderr)
 
+    if min_count > 0:
+        groups = {k: v for k, v in groups.items() if v['count'] >= min_count}
+
     try:
         with open(output_path, 'w', newline='', encoding='utf-8') as out:
             writer = csv.DictWriter(out, fieldnames=_OUTPUT_FIELDS)
@@ -80,10 +83,12 @@ def main(argv=None) -> int:
                    help='Path to input CSV  (default: data/events.csv)')
     p.add_argument('--output', dest='flag_output', default='summary.csv', metavar='FILE',
                    help='Path to output CSV (default: summary.csv)')
+    p.add_argument('--min-count', type=int, default=0, metavar='N',
+                   help='Only output groups with count >= N')
     args = p.parse_args(argv)
     input_path = args.input_file or args.flag_input
     output_path = args.output_file or args.flag_output
-    return summarise(input_path, output_path)
+    return summarise(input_path, output_path, min_count=args.min_count)
 
 
 if __name__ == '__main__':
