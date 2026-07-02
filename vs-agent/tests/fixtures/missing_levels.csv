@@ -1,0 +1,4 @@
+timestamp,level,service,message
+2024-01-01T08:00:00,,api,blank level
+2024-01-01T09:00:00,   ,api,whitespace level
+2024-01-01T10:00:00,INFO,api,normal level
