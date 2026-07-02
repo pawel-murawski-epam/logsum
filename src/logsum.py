@@ -20,37 +20,31 @@ def summarise(input_path: str, output_path: str) -> int:
     groups: dict[tuple[str, str], dict] = {}
     skipped = 0
 
-    try:
-        with fh:
-            for row_num, row in enumerate(csv.DictReader(fh), start=2):
-                raw_ts = (row.get('timestamp') or '').strip()
-                try:
-                    ts = _parse_ts(raw_ts)
-                except (ValueError, AttributeError):
-                    print(
-                        f'WARNING: skipping row {row_num} — bad timestamp: "{raw_ts}"',
-                        file=sys.stderr,
-                    )
-                    skipped += 1
-                    continue
+    with fh:
+        for row_num, row in enumerate(csv.DictReader(fh), start=2):
+            raw_ts = (row.get('timestamp') or '').strip()
+            try:
+                ts = _parse_ts(raw_ts)
+            except (ValueError, AttributeError):
+                print(
+                    f'WARNING: skipping row {row_num} — bad timestamp: "{raw_ts}"',
+                    file=sys.stderr,
+                )
+                skipped += 1
+                continue
 
-                raw_level = (row.get('level') or '').strip()
-                level = raw_level.upper() if raw_level else 'UNKNOWN'
-                service = (row.get('service') or '').strip()
+            raw_level = (row.get('level') or '').strip()
+            level = raw_level.upper() if raw_level else 'UNKNOWN'
+            service = (row.get('service') or '').strip()
 
-                key = (level, service)
-                if key in groups:
-                    g = groups[key]
-                    g['count'] += 1
-                    if ts < g['first_seen']:
-                        g['first_seen'] = ts
-                    if ts > g['last_seen']:
-                        g['last_seen'] = ts
-                else:
-                    groups[key] = {'count': 1, 'first_seen': ts, 'last_seen': ts}
-    except OSError as exc:
-        print(f'ERROR: {exc}', file=sys.stderr)
-        return 2
+            key = (level, service)
+            if key in groups:
+                g = groups[key]
+                g['count'] += 1
+                g['first_seen'] = min(g['first_seen'], ts)
+                g['last_seen'] = max(g['last_seen'], ts)
+            else:
+                groups[key] = {'count': 1, 'first_seen': ts, 'last_seen': ts}
 
     if skipped:
         print(f'skipped {skipped} row(s) due to bad timestamps', file=sys.stderr)
