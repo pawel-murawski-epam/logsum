@@ -1,0 +1,4 @@
+timestamp,level,service,message
+not-a-date,INFO,api,first bad
+also-not-a-date,WARN,db,second bad
+12345,ERROR,auth,third bad

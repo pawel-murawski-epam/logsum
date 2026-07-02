@@ -1,0 +1,31 @@
+timestamp,level,service,message
+2024-06-01T08:00:12Z,INFO,auth-service,User login successful
+2024-06-01T08:01:05Z,DEBUG,api-gateway,Routing request to auth-service
+2024-06-01T08:01:47Z,INFO,user-service,User profile fetched
+2024-06-01T08:02:33Z,WARN,payment-service,Response time exceeded 500ms threshold
+2024-06-01T08:03:01Z,ERROR,payment-service,Failed to connect to payment provider
+2024-06-01T08:03:45Z,INFO,auth-service,Token refreshed for user 1042
+2024-06-01T08:04:12Z,DEBUG,user-service,Cache miss for user 1042
+2024-06-01T08:04:58Z,INFO,notification-service,Email notification sent
+2024-06-01T08:05:30Z,ERROR,api-gateway,Upstream timeout on /api/orders
+2024-06-01T08:06:02Z,WARN,auth-service,Failed login attempt from IP 192.168.1.55
+2024-06-01T08:06:44Z,INFO,payment-service,Payment processed successfully
+2024-06-01T08:07:15Z,DEBUG,api-gateway,Health check passed
+2024-06-01T08:08:00Z,ERROR,notification-service,SMTP connection refused
+2024-06-01T08:08:33Z,INFO,user-service,New user registered
+2024-06-01T08:09:10Z,WARN,payment-service,Retry attempt 1 for transaction 9921
+2024-06-01T08:09:55Z,INFO,auth-service,User logout recorded
+2024-06-01T08:10:22Z,DEBUG,user-service,Query executed in 12ms
+2024-06-01T08:11:04Z,ERROR,payment-service,Transaction 9921 failed after 3 retries
+2024-06-01T08:11:47Z,WARN,api-gateway,Rate limit approaching for client 77
+2024-06-01T08:12:30Z,INFO,notification-service,SMS notification sent
+2024-06-01T08:13:05Z,INFO,user-service,Password changed for user 2087
+2024-06-01T08:13:49Z,DEBUG,auth-service,JWT signature verified
+2024-06-01T08:14:22Z,WARN,notification-service,Email delivery delayed by provider
+2024-06-01T08:15:01Z,INFO,api-gateway,Request served in 34ms
+2024-06-01T08:15:44Z,ERROR,user-service,Database connection pool exhausted
+2024-06-01T08:16:30Z,INFO,payment-service,Refund issued for order 4410
+2024-06-01T08:17:08Z,DEBUG,notification-service,Template rendered successfully
+2024-06-01T08:17:55Z,WARN,user-service,Slow query detected on users table
+2024-06-01T08:18:40Z,INFO,auth-service,Service health check passed
+2024-06-01T08:19:22Z,ERROR,api-gateway,SSL certificate validation failed

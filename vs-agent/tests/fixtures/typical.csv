@@ -1,0 +1,7 @@
+timestamp,level,service,message
+2024-01-01T08:00:00,INFO,api-gateway,Request received
+2024-01-01T09:00:00,warn,db,Slow query
+2024-01-01T10:00:00,INFO,api-gateway,Request completed
+2024-01-01T11:00:00,ERROR,auth,Token expired
+2024-01-01T12:00:00,WARN,db,Connection pool low
+2024-01-01T07:00:00,INFO,api-gateway,Health check
