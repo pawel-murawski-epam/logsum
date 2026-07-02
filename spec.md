@@ -75,4 +75,11 @@ The following are explicitly **not** part of this tool:
 - Third-party dependencies (stdlib only).
 - Deduplication of identical messages within a group.
 
+## §9 Minimum-count filter (--min-count N)
+
+When `--min-count N` is supplied (N ≥ 1), only groups whose count is ≥ N are
+written to the output file. The header row is always written. If no groups
+satisfy the threshold the output contains the header only and exit code is 0.
+Default behaviour (no flag or N = 0) is unchanged: all groups are output.
+
 ## Signed off Paweł Murawski 26.06.2026

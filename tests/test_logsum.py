@@ -8,6 +8,7 @@ Sections map to spec headings:
   §5  Malformed timestamp behaviour
   §6  Empty input
   §7  CLI flags & exit codes
+  §9  Minimum-count filter (--min-count N)
 """
 
 import csv
@@ -679,3 +680,65 @@ class TestCLIFlags:
             "--output", str(out),
         )
         assert rc == 0
+
+
+# ---------------------------------------------------------------------------
+# §9  Minimum-count filter (--min-count N)
+# ---------------------------------------------------------------------------
+
+
+class TestMinCount:
+    def _make_input(self, tmp_path):
+        """3 groups: INFO/api (count=3), WARN/db (count=2), ERROR/auth (count=1)."""
+        return write_csv(
+            tmp_path / "in.csv",
+            [
+                ("2024-01-01T00:00:00", "INFO",  "api",  "a"),
+                ("2024-01-01T01:00:00", "INFO",  "api",  "b"),
+                ("2024-01-01T02:00:00", "INFO",  "api",  "c"),
+                ("2024-01-01T03:00:00", "WARN",  "db",   "d"),
+                ("2024-01-01T04:00:00", "WARN",  "db",   "e"),
+                ("2024-01-01T05:00:00", "ERROR", "auth", "f"),
+            ],
+        )
+
+    def test_min_count_filters_below_threshold(self, tmp_path):
+        inp = self._make_input(tmp_path)
+        out = tmp_path / "out.csv"
+        rc, _, _ = run_logsum("--input", str(inp), "--output", str(out), "--min-count", "3")
+        assert rc == 0
+        rows = read_csv(out)
+        keys = {(r["level"], r["service"]) for r in rows}
+        assert ("WARN", "db") not in keys
+        assert ("ERROR", "auth") not in keys
+
+    def test_min_count_keeps_at_threshold(self, tmp_path):
+        inp = self._make_input(tmp_path)
+        out = tmp_path / "out.csv"
+        run_logsum("--input", str(inp), "--output", str(out), "--min-count", "2")
+        rows = read_csv(out)
+        keys = {(r["level"], r["service"]) for r in rows}
+        assert ("INFO", "api") in keys
+        assert ("WARN", "db") in keys
+        assert ("ERROR", "auth") not in keys
+
+    def test_min_count_zero_keeps_all(self, tmp_path):
+        inp = self._make_input(tmp_path)
+        out = tmp_path / "out.csv"
+        run_logsum("--input", str(inp), "--output", str(out), "--min-count", "0")
+        assert len(read_csv(out)) == 3
+
+    def test_min_count_above_all_groups(self, tmp_path):
+        inp = self._make_input(tmp_path)
+        out = tmp_path / "out.csv"
+        rc, _, _ = run_logsum("--input", str(inp), "--output", str(out), "--min-count", "99")
+        assert rc == 0
+        assert read_csv(out) == []
+        content = out.read_text()
+        assert "level" in content
+
+    def test_min_count_not_set_default(self, tmp_path):
+        inp = self._make_input(tmp_path)
+        out = tmp_path / "out.csv"
+        run_logsum("--input", str(inp), "--output", str(out))
+        assert len(read_csv(out)) == 3
